@@ -3,67 +3,56 @@
 #include <string>
 using namespace std;
 
-class Util {
-public:
-	static char* copyString(const char* source) {
-		if (source == nullptr) {
-			return nullptr;
-		}
-		char* value = new char[strlen(source) + 1];
-		strcpy_s(value, strlen(source) + 1, source);
-		return value;
-	}
-};
-
-
 class Event {
 	int eventId;
-	char date[11] = ""; //dd/mm/yyy
-	char time[5] = "";  //hh:mm
-	string nameOfTheConcert;
-	//Location* location;
-	static int TOTAL_EVENTS;
+	char date[11];  //DD/MM//YY
+	char time[6];   //HH:MM
+	string nameEvent;
 
 public:
-	//getters
+	//default constructor
+
+	Event() : eventId(-1),date(""), time(""), nameEvent("") {
+		strcpy_s(date, 11, "00/00/0000");
+		strcpy_s(time, 6, "00:00");
+	}
+    Event(int eventId, const char* date, const char* time, const string& nameEvent);
+
+    // Copy constructor
+    Event(const Event& other);
+
+   
+
+    // Getters
 	int getEventId() {
 		return this->eventId;
 	}
-	char* getDate() {
-		return Util::copyString(this->date);
+	const char* getDate() {
+		return this->date;
 	}
-	char* getTime() {
-		return Util::copyString(this->time);
+	const char* getTime() {
+		return this->time;
+	}
+	string getNameEvent() {
+		return this->nameEvent;
 	}
 
-	//setters
+    // Setters
 	void setEventId(int EventId) {
 		this->eventId = EventId;
 	}
-	void setDate(const char* newDate) {
-		if (strlen(newDate) != 10) {
-			throw exception("Wrong date");
-		}
-		if (newDate[2] != '/' || newDate[5] != '/') {
-			throw exception("Wrong date format");
-		}
-
-		strcpy_s(this->date, newDate);
-
+	void setDate(const char* nDate);
+	
+	void setTime(const char* nTime);
+	void setNameEvent(string NameEvent) {
+		this->nameEvent = NameEvent;
 	}
 
-	void setDate(const char* newTime) {
-		if (strlen(newTime) != 5) {
-			throw exception("Wrong Time");
-		}
-		if (newTime[2] != ':') {
-			throw exception("Wrong time format");
-		}
+	//destructor
+	~Event();
 
-		strcpy_s(this->date, newTime);
-	}
-
-	Event(int eventId, const char* date, const char* time, string nameOfTheConcert) : eventId(0), date("date"), time("time"), nameOfTheConcert(nameOfTheConcert) {
-
-	}
+	friend ostream& operator<<(ostream& out, const Event& event);
+	friend istream& operator>>(istream& in, Event& event);
 };
+bool operator==(const Event& left, const Event& right);
+bool operator!=(const Event& left, const Event& right);
